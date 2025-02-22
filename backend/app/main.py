@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.v1.endpoints import diagnosis, voice, tts, health_query
 from dotenv import load_dotenv
 
-app = FastAPI(title="AI Doctor - Medical Assistant")
+app = FastAPI(title="AI Powered Medical Assistant for Diagnosis and Patient Consultation")
 
 # CORS Middleware (for frontend integration)
 app.add_middleware(
@@ -22,4 +22,4 @@ app.include_router(health_query.router, prefix="/api/v1/health-query", tags=["He
 
 @app.get("/")
 async def root():
-    return {"message": "Welcome to AI Doctor API 🚀"}
+    return {"message": "Welcome to AI Powered Medical Assistant for Diagnosis and Patient Consultation API "}
