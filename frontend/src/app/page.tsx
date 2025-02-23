@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, } from "react";
 import ReactMarkdown from "react-markdown";
-
 
 export default function PatientForm() {
   const [formData, setFormData] = useState({
@@ -26,12 +25,15 @@ export default function PatientForm() {
     allergies: "",
   });
 
-  const [labTests, setLabTests] = useState<File | null>(null);
-  const [xRay, setXRay] = useState<File | null>(null);
+  // const [labTests, setLabTests] = useState<File | null>(null);
+  // const [xRay, setXRay] = useState<File | null>(null);
   const [errors, setErrors] = useState<{ query?: string }>({});
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState("");
   const [apiError, setApiError] = useState("");
+  // const [recording, setRecording] = useState(false);
+
+  // const recognitionRef = useRef<any>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -40,10 +42,33 @@ export default function PatientForm() {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, type: string) => {
     if (e.target.files && e.target.files.length > 0) {
-      if (type === "labTests") setLabTests(e.target.files[0]);
-      if (type === "xRay") setXRay(e.target.files[0]);
+      console.log('type', type)
+      // if (type === "labTests") setLabTests(e.target.files[0]);
+      // if (type === "xRay") setXRay(e.target.files[0]);
     }
   };
+
+  // const handleVoiceInput = () => {
+  //   if (!("webkitSpeechRecognition" in window)) {
+  //     alert("Your browser does not support speech recognition. Please use another browser.");
+  //     return;
+  //   }
+
+  //   const recognition = new window.webkitSpeechRecognition();
+  //   recognition.lang = "en-US";
+  //   recognition.continuous = false;
+  //   recognition.interimResults = false;
+    
+  //   recognition.onstart = () => setRecording(true);
+  //   recognition.onend = () => setRecording(false);
+  //   recognition.onresult = (event) => {
+  //     const transcript = event.results[0][0].transcript;
+  //     setFormData((prev) => ({ ...prev, query: prev.query + " " + transcript }));
+  //   };
+    
+  //   recognition.start();
+  //   recognitionRef.current = recognition;
+  // };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -74,7 +99,7 @@ export default function PatientForm() {
       } else {
         setApiError("Failed to get a response. Please try again.");
       }
-    } catch (err) {
+    } catch {
       setApiError("Error connecting to the API. Make sure the backend is running.");
     }
     
@@ -83,16 +108,11 @@ export default function PatientForm() {
 
   return (
     <div className="flex flex-col justify-center items-center min-h-screen bg-gray-100 p-6">
-      <h1 className="text-3xl font-bold text-gray-800 mb-4">AI Powered Medical Assistant for Diagnosis and Patient Consultation</h1>
+      <h1 className="text-3xl font-bold text-gray-800 mb-4">AI Powered Medical Assistant</h1>
       <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-2xl">
-        <h2 className="text-2xl font-bold text-center text-gray-700 mb-4">Medical Information</h2>
-
         <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {/* Query Field */}
           <div className="col-span-2 flex flex-col">
-            <label className="text-sm font-medium text-gray-700">
-              Query <span className="text-red-500">*</span>
-            </label>
+            <label className="text-sm font-medium text-gray-700">Query <span className="text-red-500">*</span></label>
             <textarea
               name="query"
               value={formData.query}
@@ -100,6 +120,9 @@ export default function PatientForm() {
               className={`border border-gray-300 rounded-lg px-3 py-2 w-full h-24 ${errors.query ? "border-red-500" : ""}`}
             />
             {errors.query && <p className="text-red-500 text-sm">{errors.query}</p>}
+            {/* <button type="button" onClick={handleVoiceInput} className="bg-blue-600 text-white px-4 py-2 rounded-lg mt-2">
+              {recording ? "Recording..." : "Record Voice"}
+            </button> */}
           </div>
 
           {/* Other Fields */}
@@ -107,33 +130,13 @@ export default function PatientForm() {
             key !== "query" ? (
               <div key={key} className="flex flex-col">
                 <label className="text-sm font-medium text-gray-700 capitalize">{key.replace(/([A-Z])/g, " $1")}</label>
-                {key === "gender" || key === "maritalStatus" ? (
-                  <select name={key} value={formData[key as keyof typeof formData]} onChange={handleChange} className="border border-gray-300 rounded-lg px-3 py-2">
-                    {key === "gender" ? (
-                      <>
-                        <option value="">Select</option>
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
-                        <option value="other">Other</option>
-                      </>
-                    ) : (
-                      <>
-                        <option value="">Select</option>
-                        <option value="single">Single</option>
-                        <option value="married">Married</option>
-                        <option value="divorced">Divorced</option>
-                      </>
-                    )}
-                  </select>
-                ) : (
-                  <input
-                    type="text"
-                    name={key}
-                    value={formData[key as keyof typeof formData]}
-                    onChange={handleChange}
-                    className="border border-gray-300 rounded-lg px-3 py-2"
-                  />
-                )}
+                <input
+                  type="text"
+                  name={key}
+                  value={formData[key as keyof typeof formData]}
+                  onChange={handleChange}
+                  className="border border-gray-300 rounded-lg px-3 py-2"
+                />
               </div>
             ) : null
           )}
