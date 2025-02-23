@@ -25,8 +25,7 @@ export default function PatientForm() {
     allergies: "",
   });
 
-  // const [labTests, setLabTests] = useState<File | null>(null);
-  // const [xRay, setXRay] = useState<File | null>(null);
+  const [image, setImage] = useState<File | null>(null);
   const [errors, setErrors] = useState<{ query?: string }>({});
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState("");
@@ -43,8 +42,7 @@ export default function PatientForm() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, type: string) => {
     if (e.target.files && e.target.files.length > 0) {
       console.log('type', type)
-      // if (type === "labTests") setLabTests(e.target.files[0]);
-      // if (type === "xRay") setXRay(e.target.files[0]);
+      if (type === "image") setImage(e.target.files[0]);
     }
   };
 
@@ -72,26 +70,32 @@ export default function PatientForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+  
     if (!formData.query.trim()) {
       setErrors({ query: "Query is required" });
       return;
     }
-
+  
     setLoading(true);
     setApiError("");
     setResponse("");
-
+  
     try {
+      const formDataToSend = new FormData();
+  
+      // Append form data fields
+      Object.keys(formData).forEach((key) => {
+        formDataToSend.append(key, formData[key as keyof typeof formData]);
+      });
+  
+      // Append image files if available
+      if (image) formDataToSend.append("image", image);
+  
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/health-query/analyze-query/`, {
         method: "POST",
-        headers: {
-          "Accept": "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
+        body: formDataToSend,
       });
-
+  
       const data = await res.json();
       
       if (res.ok) {
@@ -102,9 +106,11 @@ export default function PatientForm() {
     } catch {
       setApiError("Error connecting to the API. Make sure the backend is running.");
     }
-    
+  
     setLoading(false);
   };
+  
+  
 
   return (
     <div className="flex flex-col justify-center items-center min-h-screen bg-gray-100 p-6">
@@ -141,16 +147,12 @@ export default function PatientForm() {
             ) : null
           )}
 
-          {/* File Uploads */}
+          {/* Image Upload */}
           <div className="flex flex-col">
-            <label className="text-sm font-medium text-gray-700">Lab Tests (PDF/Img)</label>
-            <input type="file" accept="image/*,.pdf" onChange={(e) => handleFileChange(e, "labTests")} className="border border-gray-300 rounded-lg px-3 py-2" />
+            <label className="text-sm font-medium text-gray-700">Image</label>
+            <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, "image")} className="border border-gray-300 rounded-lg px-3 py-2" />
           </div>
 
-          <div className="flex flex-col">
-            <label className="text-sm font-medium text-gray-700">Radiology X-Ray (PDF/Img)</label>
-            <input type="file" accept="image/*,.pdf" onChange={(e) => handleFileChange(e, "xRay")} className="border border-gray-300 rounded-lg px-3 py-2" />
-          </div>
 
           {/* Submit Button */}
           <div className="col-span-2 flex justify-center mt-4">

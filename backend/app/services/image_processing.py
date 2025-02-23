@@ -1,13 +1,32 @@
-import openai
-from app.core.config import settings
+import os
+from dotenv import load_dotenv
+from groq import Groq
 
-openai.api_key = settings.OPENAI_API_KEY
+load_dotenv()
 
-async def analyze_image(image_url: str) -> str:
-    response = openai.ChatCompletion.create(
-        model="gpt-4-vision-preview",
-        messages=[{"role": "user", "content": f"Analyze this medical image: {image_url}"}],
-        max_tokens=100
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+
+if not GROQ_API_KEY:
+    raise ValueError("GROQ_API_KEY is not set! Please set it as an environment variable.")
+
+client = Groq(api_key=GROQ_API_KEY)
+
+async def analyze_image_text(query, image_url: str) -> str:
+    response = client.chat.completions.create(
+        model="llama-3.2-90b-vision-preview",
+        messages=[
+            {
+                "role": "user",
+                "content": [
+                    {"type": "text", "text": query},
+                    {"type": "image_url", "image_url": {"url": image_url}}
+                ]
+            }
+        ],
+        temperature=0.7,
+        max_tokens=500,
+        top_p=1.0
     )
-    
-    return response["choices"][0]["message"]["content"]
+
+    return response.choices[0].message.content
+
