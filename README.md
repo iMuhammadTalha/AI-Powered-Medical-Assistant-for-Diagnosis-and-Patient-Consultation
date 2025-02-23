@@ -5,3 +5,8 @@ uvicorn app.main:app --reload
 
 ## For Frontend
 npm run dev
+
+
+Developed by:
+Muhammad Talha
+muhammadtalha3810@gmail.com
