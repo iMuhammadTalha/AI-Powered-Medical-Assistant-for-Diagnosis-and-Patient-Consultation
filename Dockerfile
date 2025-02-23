@@ -15,4 +15,4 @@ RUN pip install -r backend/requirements.txt
 EXPOSE 7860
 
 # Command to run your app (modify for Streamlit/Gradio)
-CMD ["python", "backend/app.main.py"]
+CMD ["python", "backend/app/main.py"]
