@@ -8,11 +8,14 @@ WORKDIR /app
 COPY backend backend
 COPY frontend frontend
 
+# Set PYTHONPATH to include the backend directory
+ENV PYTHONPATH=/app/backend
+
 # Install dependencies (modify as needed)
 RUN pip install -r backend/requirements.txt
 
 # Expose the port
 EXPOSE 7860
 
-# Command to run your app (modify for Streamlit/Gradio)
+# Command to run your app
 CMD ["python", "backend/app/main.py"]
