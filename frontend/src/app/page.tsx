@@ -108,7 +108,7 @@ export default function PatientForm() {
 
   return (
     <div className="flex flex-col justify-center items-center min-h-screen bg-gray-100 p-6">
-      <h1 className="text-3xl font-bold text-gray-800 mb-4">AI Powered Medical Assistant</h1>
+      <h1 className="text-3xl font-bold text-gray-800 mb-4">AI Powered Medical Assistant for Diagnosis and Patient Consultation</h1>
       <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-2xl">
         <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="col-span-2 flex flex-col">
