@@ -58,9 +58,11 @@ async def analyze_query(
     # Filter out None values
     merged_query = query + "\n" + "\n".join(f"{key}: {value}" for key, value in user_inputs.items() if value)
 
+    print("merged_query", merged_query)
 
     # Process text or image analysis
     if imageUrl:
+        print("image_url", imageUrl)
         response = await analyze_image_text(merged_query, imageUrl)
     else:
         response = await analyze_medical_text(merged_query)
