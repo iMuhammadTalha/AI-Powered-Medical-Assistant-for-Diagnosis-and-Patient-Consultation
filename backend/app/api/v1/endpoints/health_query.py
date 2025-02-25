@@ -27,18 +27,12 @@ async def analyze_query(
     surgeryHistory: Optional[str] = Form(None),
     diseaseHistory: Optional[str] = Form(None),
     allergies: Optional[str] = Form(None),
+    imageUrl: Optional[str] = Form(None),
     image: Optional[UploadFile] = File(None),
 ):
     """
     Process user health-related query with optional medical files.
     """
-    # Handle file saving
-    saved_files = {}
-    if image:
-        file_location = f"uploads/{image.filename}"
-        with open(file_location, "wb") as buffer:
-            buffer.write(await image.read())
-        saved_files["image"] = file_location
 
     # Collect only user-provided inputs
     user_inputs = {
@@ -64,12 +58,10 @@ async def analyze_query(
     # Filter out None values
     merged_query = query + "\n" + "\n".join(f"{key}: {value}" for key, value in user_inputs.items() if value)
 
-    
 
     # Process text or image analysis
-    if saved_files and "image" in saved_files:
-        image_url = await upload_file(saved_files["image"])
-        response = await analyze_image_text(merged_query, image_url)
+    if imageUrl:
+        response = await analyze_image_text(merged_query, imageUrl)
     else:
         response = await analyze_medical_text(merged_query)
 

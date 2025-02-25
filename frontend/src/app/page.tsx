@@ -68,6 +68,32 @@ export default function PatientForm() {
   //   recognitionRef.current = recognition;
   // };
 
+  const uploadImage = async () => {
+    if (!image) return null; 
+
+    setLoading(true);
+    try {
+      const uploadData = new FormData();
+      uploadData.append("file", image);
+      uploadData.append("upload_preset", process.env.NEXT_PUBLIC_API_CLOUDINARY_UPLOAD_PRESENT!);
+
+      const res = await fetch(
+        `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_API_CLOUDINARY_CLOUD_NAME}/image/upload`,
+        { method: "POST", body: uploadData }
+      );
+
+      const data = await res.json();
+      setFormData((prev) => ({ ...prev, imageUrl: data.secure_url }));  // Store URL in formData
+      return data.secure_url;
+    } catch (error) {
+      console.error("Upload failed:", error);
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
   
@@ -81,16 +107,19 @@ export default function PatientForm() {
     setResponse("");
   
     try {
+      let uploadedImageUrl = "";
+
+      if (image)
+      {
+        uploadedImageUrl = await uploadImage();
+      }
+      const finalFormData = { ...formData, imageUrl: uploadedImageUrl };
+
       const formDataToSend = new FormData();
-  
-      // Append form data fields
-      Object.keys(formData).forEach((key) => {
-        formDataToSend.append(key, formData[key as keyof typeof formData]);
+      Object.keys(finalFormData).forEach((key) => {
+        formDataToSend.append(key, finalFormData[key as keyof typeof finalFormData]);
       });
-  
-      // Append image files if available
-      if (image) formDataToSend.append("image", image);
-  
+
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/health-query/analyze-query/`, {
         method: "POST",
         body: formDataToSend,
