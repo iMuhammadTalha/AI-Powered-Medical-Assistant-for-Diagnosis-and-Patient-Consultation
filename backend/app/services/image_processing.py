@@ -12,6 +12,7 @@ if not GROQ_API_KEY:
 client = Groq(api_key=GROQ_API_KEY)
 
 async def analyze_image_text(query, image_url: str) -> str:
+    print("Image + text query", query, image_url)
     response = client.chat.completions.create(
         model="llama-3.2-90b-vision-preview",
         messages=[
