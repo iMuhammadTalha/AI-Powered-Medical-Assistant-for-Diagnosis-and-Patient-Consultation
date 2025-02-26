@@ -8,7 +8,7 @@ app_file: Dockerfile  # Main file of your application
 pinned: false  
 ---
 
-# AI-Powered-Medical-Assistant-for-Diagnosis-and-Patient-Consultation
+# AI-Powered Medical Assistant for Diagnosis and Patient Consultation
 
 ## Overview
 AI-Powered Medical Assistant is a smart healthcare application designed to assist in medical diagnosis and patient consultation. The system leverages AI-driven algorithms to provide preliminary assessments based on patient symptoms and medical history. The application consists of a FastAPI backend and a React frontend, offering a seamless user experience for both patients and healthcare professionals.
