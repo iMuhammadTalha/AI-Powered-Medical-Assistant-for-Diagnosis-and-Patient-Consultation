@@ -31,6 +31,7 @@ export default function PatientForm() {
   const [response, setResponse] = useState("");
   const [apiError, setApiError] = useState("");
   // const [recording, setRecording] = useState(false);
+  const [audioUrl, setAudioUrl] = useState("");
 
   // const recognitionRef = useRef<any>(null);
 
@@ -75,7 +76,7 @@ export default function PatientForm() {
     try {
       const uploadData = new FormData();
       uploadData.append("file", image);
-      uploadData.append("upload_preset", process.env.NEXT_PUBLIC_API_CLOUDINARY_UPLOAD_PRESENT!);
+      uploadData.append("upload_preset", `${process.env.NEXT_PUBLIC_API_CLOUDINARY_UPLOAD_PRESENT}`);
 
       const res = await fetch(
         `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_API_CLOUDINARY_CLOUD_NAME}/image/upload`,
@@ -129,6 +130,23 @@ export default function PatientForm() {
       
       if (res.ok) {
         setResponse(data.response);
+
+        // Call TTS API with the response text
+        const ttsRes = await fetch("http://127.0.0.1:8000/api/v1/tts/text-to-speech/", {
+          method: "POST",
+          headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ text: data.response }),
+        });
+
+        const ttsData = await ttsRes.json();
+        if (ttsRes.ok && ttsData.audio_url) {
+          setAudioUrl(ttsData.audio_url);
+        } else {
+          console.error("TTS API error:", ttsData);
+        }
       } else {
         setApiError("Failed to get a response. Please try again.");
       }
@@ -196,6 +214,15 @@ export default function PatientForm() {
         {response && (
           <div className="bg-white p-4 mt-4 rounded shadow w-3/4">
             <ReactMarkdown>{response}</ReactMarkdown>
+          </div>
+        )}
+        {audioUrl && (
+          <div className="mt-4">
+            <h2 className="text-lg font-medium text-gray-700">Audio Response</h2>
+            <audio controls>
+              <source src={audioUrl} type="audio/mpeg" />
+              Your browser does not support the audio element.
+            </audio>
           </div>
         )}
         </div>

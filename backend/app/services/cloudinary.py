@@ -2,6 +2,8 @@ import cloudinary
 import cloudinary.uploader
 import os
 from dotenv import load_dotenv
+import asyncio
+
 
 # Load environment variables
 load_dotenv()
@@ -13,7 +15,7 @@ cloudinary.config(
     api_secret=os.getenv("API_SECRET"),
 )
 
-async def upload_file(file_path, resource_type="auto"):
+async def upload_file(file_buffer, resource_type="auto"):
     """
     Uploads a file to Cloudinary asynchronously.
 
@@ -22,10 +24,13 @@ async def upload_file(file_path, resource_type="auto"):
     :return: Secure URL of the uploaded file.
     """
     try:
-        import asyncio
         loop = asyncio.get_running_loop()
         response = await loop.run_in_executor(
-            None, lambda: cloudinary.uploader.upload(file_path, resource_type=resource_type)
+            None, lambda: cloudinary.uploader.upload(
+                file_buffer, 
+                resource_type=resource_type, 
+                **{"public_id": "response", "format": "mp3"}  # Pass options as a dictionary
+            )
         )
         return response["secure_url"]
     except Exception as e:
