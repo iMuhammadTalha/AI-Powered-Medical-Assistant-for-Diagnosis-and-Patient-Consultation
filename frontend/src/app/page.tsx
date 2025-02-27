@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, } from "react";
+import { useRef, useState, } from "react";
 import ReactMarkdown from "react-markdown";
 
 export default function PatientForm() {
@@ -30,10 +30,10 @@ export default function PatientForm() {
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState("");
   const [apiError, setApiError] = useState("");
-  // const [recording, setRecording] = useState(false);
+  const [recording, setRecording] = useState(false);
   const [audioUrl, setAudioUrl] = useState("");
 
-  // const recognitionRef = useRef<any>(null);
+  const recognitionRef = useRef<any>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -47,27 +47,29 @@ export default function PatientForm() {
     }
   };
 
-  // const handleVoiceInput = () => {
-  //   if (!("webkitSpeechRecognition" in window)) {
-  //     alert("Your browser does not support speech recognition. Please use another browser.");
-  //     return;
-  //   }
-
-  //   const recognition = new window.webkitSpeechRecognition();
-  //   recognition.lang = "en-US";
-  //   recognition.continuous = false;
-  //   recognition.interimResults = false;
-    
-  //   recognition.onstart = () => setRecording(true);
-  //   recognition.onend = () => setRecording(false);
-  //   recognition.onresult = (event) => {
-  //     const transcript = event.results[0][0].transcript;
-  //     setFormData((prev) => ({ ...prev, query: prev.query + " " + transcript }));
-  //   };
-    
-  //   recognition.start();
-  //   recognitionRef.current = recognition;
-  // };
+  const handleVoiceInput = () => {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert("Your browser does not support speech recognition. Please use another browser.");
+      return;
+    }
+  
+    const recognition = new SpeechRecognition();
+    recognition.lang = "en-US";
+    recognition.continuous = false;
+    recognition.interimResults = false;
+  
+    recognition.onstart = () => setRecording(true);
+    recognition.onend = () => setRecording(false);
+    recognition.onresult = (event: any) => {
+      const transcript = event.results[0][0].transcript;
+      setFormData((prev) => ({ ...prev, query: prev.query + " " + transcript }));
+    };
+  
+    recognition.start();
+    recognitionRef.current = recognition;
+  };
+  
 
   const uploadImage = async () => {
     if (!image) return null; 
@@ -84,7 +86,7 @@ export default function PatientForm() {
       );
 
       const data = await res.json();
-      setFormData((prev) => ({ ...prev, imageUrl: data.secure_url }));  // Store URL in formData
+      setFormData((prev) => ({ ...prev, imageUrl: data.secure_url }));
       return data.secure_url;
     } catch (error) {
       console.error("Upload failed:", error);
@@ -173,9 +175,9 @@ export default function PatientForm() {
               className={`border border-gray-300 rounded-lg px-3 py-2 w-full h-24 ${errors.query ? "border-red-500" : ""}`}
             />
             {errors.query && <p className="text-red-500 text-sm">{errors.query}</p>}
-            {/* <button type="button" onClick={handleVoiceInput} className="bg-blue-600 text-white px-4 py-2 rounded-lg mt-2">
+            <button type="button" onClick={handleVoiceInput} className="bg-blue-600 text-white px-4 py-2 rounded-lg mt-2">
               {recording ? "Recording..." : "Record Voice"}
-            </button> */}
+            </button>
           </div>
 
           {/* Other Fields */}
