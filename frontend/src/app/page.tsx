@@ -33,6 +33,7 @@ export default function PatientForm() {
   const [recording, setRecording] = useState(false);
   const [audioUrl, setAudioUrl] = useState("");
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const recognitionRef = useRef<any>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -48,6 +49,7 @@ export default function PatientForm() {
   };
 
   const handleVoiceInput = () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SpeechRecognition) {
       alert("Your browser does not support speech recognition. Please use another browser.");
@@ -61,6 +63,7 @@ export default function PatientForm() {
   
     recognition.onstart = () => setRecording(true);
     recognition.onend = () => setRecording(false);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     recognition.onresult = (event: any) => {
       const transcript = event.results[0][0].transcript;
       setFormData((prev) => ({ ...prev, query: prev.query + " " + transcript }));
