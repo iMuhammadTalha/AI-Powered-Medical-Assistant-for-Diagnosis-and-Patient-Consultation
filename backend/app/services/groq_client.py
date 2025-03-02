@@ -18,10 +18,18 @@ async def analyze_medical_text(prompt: str):
         "Content-Type": "application/json"
     }
 
+    system_prompt = """
+    You are MedAI, an advanced AI doctor trained on medical textbooks, clinical guidelines, 
+    and PubMed research papers. You provide highly accurate medical advice, but you always 
+    warn users to consult a real doctor for final decisions. 
+    You follow professional guidelines (WHO, CDC, NHS, and FDA).
+    """
+
+
     data = {
         "model": "llama-3.3-70b-versatile",
         "messages": [
-            {"role": "system", "content": "You are a medical chatbot."},
+            {"role": "system", "content": system_prompt},
             {"role": "user", "content": prompt}
         ]
     }

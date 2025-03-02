@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api.v1.endpoints import diagnosis, voice, tts, health_query
+from app.api.v1.endpoints import voice, tts, health_query
 from dotenv import load_dotenv
 
 app = FastAPI(title="AI Powered Medical Assistant for Diagnosis and Patient Consultation")
@@ -15,7 +15,6 @@ app.add_middleware(
 )
 
 # Register API Routes
-app.include_router(diagnosis.router, prefix="/api/v1/diagnosis", tags=["Diagnosis"])
 app.include_router(voice.router, prefix="/api/v1/voice", tags=["Voice Processing"])
 app.include_router(tts.router, prefix="/api/v1/tts", tags=["Text-to-Speech"])
 app.include_router(health_query.router, prefix="/api/v1/health-query", tags=["Health Chatbot"])
