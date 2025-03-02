@@ -4,24 +4,28 @@ FROM python:3.9
 # Set the working directory
 WORKDIR /app
 
-# Copy backend and frontend
+# Copy only the requirements file first (for caching)
+COPY backend/requirements.txt backend/
+
+# Create a virtual environment and install dependencies
+RUN python -m venv /app/venv && \
+    /app/venv/bin/pip install --upgrade pip && \
+    /app/venv/bin/pip install -r backend/requirements.txt
+
+# Copy the rest of the application code
 COPY backend backend
 COPY frontend frontend
 
 # Set PYTHONPATH to include the backend directory
 ENV PYTHONPATH=/app/backend
+ENV PATH="/app/venv/bin:$PATH"
 
-# Upgrade pip
-RUN pip install --upgrade pip
-
-# Fix the huggingface_hub issue
-RUN pip install --upgrade huggingface_hub
-
-# Install dependencies
-RUN pip install -r backend/requirements.txt
+# Create a non-root user
+RUN useradd -m appuser && chown -R appuser /app
+USER appuser
 
 # Expose the correct port
 EXPOSE 7860
 
-# Command to run the FastAPI app with Uvicorn
-CMD ["uvicorn", "backend.app.main:app", "--host", "0.0.0.0", "--port", "7860"]
+# Use entrypoint for better argument handling
+ENTRYPOINT ["uvicorn", "backend.app.main:app", "--host", "0.0.0.0", "--port", "7860"]
