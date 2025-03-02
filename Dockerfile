@@ -11,8 +11,14 @@ COPY frontend frontend
 # Set PYTHONPATH to include the backend directory
 ENV PYTHONPATH=/app/backend
 
-# Upgrade pip and install dependencies
-RUN pip install --upgrade pip && pip install -r backend/requirements.txt
+# Upgrade pip
+RUN pip install --upgrade pip
+
+# Fix the huggingface_hub issue
+RUN pip install --upgrade huggingface_hub
+
+# Install dependencies
+RUN pip install -r backend/requirements.txt
 
 # Expose the correct port
 EXPOSE 7860
