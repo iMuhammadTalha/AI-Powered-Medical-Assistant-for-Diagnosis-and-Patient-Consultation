@@ -1,6 +1,5 @@
 import os
 import httpx
-import random
 import numpy as np
 import faiss
 from dotenv import load_dotenv
