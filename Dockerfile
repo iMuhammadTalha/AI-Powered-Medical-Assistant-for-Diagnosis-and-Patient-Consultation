@@ -10,7 +10,6 @@ COPY backend/requirements.txt backend/
 # Create a virtual environment and install dependencies
 RUN python -m venv /app/venv && \
     /app/venv/bin/pip install --upgrade pip && \
-    /app/venv/bin/pip install "huggingface_hub==0.14.1" && \
     /app/venv/bin/pip install -r backend/requirements.txt
 
 # Copy the rest of the application code
