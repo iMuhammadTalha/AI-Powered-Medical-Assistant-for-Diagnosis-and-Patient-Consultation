@@ -137,7 +137,7 @@ export default function PatientForm() {
         setResponse(data.response);
 
         // Call TTS API with the response text
-        const ttsRes = await fetch("http://127.0.0.1:8000/api/v1/tts/text-to-speech/", {
+        const ttsRes = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/tts/text-to-speech/`, {
           method: "POST",
           headers: {
             "Accept": "application/json",
