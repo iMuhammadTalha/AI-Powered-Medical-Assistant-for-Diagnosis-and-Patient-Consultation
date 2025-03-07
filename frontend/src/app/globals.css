@@ -23,3 +23,7 @@ body {
 input, textarea {
   color: black !important;
 }
+
+.prose-black {
+  color: black !important;
+}

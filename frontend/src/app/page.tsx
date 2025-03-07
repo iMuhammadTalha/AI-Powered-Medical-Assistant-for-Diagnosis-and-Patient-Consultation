@@ -217,8 +217,8 @@ export default function PatientForm() {
         {/* API Response Display */}
         {apiError && <p className="text-red-500 text-center mt-4">{apiError}</p>}
         {response && (
-          <div className="bg-white p-4 mt-4 rounded shadow w-3/4">
-            <ReactMarkdown>{response}</ReactMarkdown>
+          <div className="bg-white p-4 mt-4 rounded shadow w-3/4 prose prose-black">
+          <ReactMarkdown>{response}</ReactMarkdown>
           </div>
         )}
         {audioUrl && (
