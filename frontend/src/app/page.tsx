@@ -170,12 +170,12 @@ export default function PatientForm() {
       <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-2xl">
         <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="col-span-2 flex flex-col">
-            <label className="text-sm font-medium text-gray-700">Query <span className="text-red-500">*</span></label>
+            <label className="text-sm font-medium text-black-700">Query <span className="text-red-500">*</span></label>
             <textarea
               name="query"
               value={formData.query}
               onChange={handleChange}
-              className={`border border-gray-300 rounded-lg px-3 py-2 w-full h-24 ${errors.query ? "border-red-500" : ""}`}
+              className={`border border-black-300 rounded-lg px-3 py-2 w-full h-24 ${errors.query ? "border-red-500" : ""}`}
             />
             {errors.query && <p className="text-red-500 text-sm">{errors.query}</p>}
             <button type="button" onClick={handleVoiceInput} className="bg-blue-600 text-white px-4 py-2 rounded-lg mt-2">
@@ -187,13 +187,13 @@ export default function PatientForm() {
           {Object.keys(formData).map((key) =>
             key !== "query" ? (
               <div key={key} className="flex flex-col">
-                <label className="text-sm font-medium text-gray-700 capitalize">{key.replace(/([A-Z])/g, " $1")}</label>
+                <label className="text-sm font-medium text-black-700 capitalize">{key.replace(/([A-Z])/g, " $1")}</label>
                 <input
                   type="text"
                   name={key}
                   value={formData[key as keyof typeof formData]}
                   onChange={handleChange}
-                  className="border border-gray-300 rounded-lg px-3 py-2"
+                  className="border border-black-300 rounded-lg px-3 py-2"
                 />
               </div>
             ) : null
@@ -201,8 +201,8 @@ export default function PatientForm() {
 
           {/* Image Upload */}
           <div className="flex flex-col">
-            <label className="text-sm font-medium text-gray-700">Image</label>
-            <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, "image")} className="border border-gray-300 rounded-lg px-3 py-2" />
+            <label className="text-sm font-medium text-black-700">Image</label>
+            <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, "image")} className="border border-black-300 rounded-lg px-3 py-2" />
           </div>
 
 
@@ -223,7 +223,7 @@ export default function PatientForm() {
         )}
         {audioUrl && (
           <div className="mt-4">
-            <h2 className="text-lg font-medium text-gray-700">Audio Response</h2>
+            <h2 className="text-lg font-medium text-black-700">Audio Response</h2>
             <audio controls>
               <source src={audioUrl} type="audio/mpeg" />
               Your browser does not support the audio element.
